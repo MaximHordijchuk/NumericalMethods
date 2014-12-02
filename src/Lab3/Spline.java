@@ -22,6 +22,7 @@ public class Spline {
         int N = points.length;
         splines = new SplineTuple[N];
         for (int i = 0; i < N; i++) {
+            splines[i] = new SplineTuple();
             splines[i].x = points[i].x;
             splines[i].a = points[i].y;
         }
@@ -29,7 +30,7 @@ public class Spline {
         Matrix b = new Matrix(N, 1);
         A.set(0, 0, 1);
         A.set(N - 1, N - 1, 1);
-        for (int i = 0; i < N - 1; i++) {
+        for (int i = 1; i < N - 1; i++) {
             double hi  = points[i].x - points[i - 1].x;
             double hi1 = points[i + 1].x - points[i].x;
             A.set(i, i - 1, hi);
@@ -55,7 +56,7 @@ public class Spline {
         int N = splines.length;
         SplineTuple spline;
         if (x <= splines[0].x) {
-            spline = splines[0];
+            spline = splines[1];
         } else if (x >= splines[N - 1].x) {
             spline = splines[N - 1];
         } else {
