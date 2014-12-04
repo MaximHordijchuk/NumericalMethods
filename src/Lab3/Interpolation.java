@@ -15,7 +15,7 @@ public class Interpolation {
         return product;
     }
 
-    public static double getValueLagrangePolinom(double x, Point[] points) {
+    public static double getValueLagrangePolynomial(double x, Point[] points) {
         double sum = 0;
         for (int i = 0; i < points.length; i++) {
             sum += points[i].y * F(x, i, points);

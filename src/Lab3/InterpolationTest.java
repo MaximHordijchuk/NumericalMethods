@@ -13,19 +13,20 @@ public class InterpolationTest {
 
     public static void main(String[] args) {
         try {
-            Scanner scanner = new Scanner(new InputStreamReader(
-                    new FileInputStream("src/Lab3/resources/InterpolationInput1.txt"),"UTF-8")).useLocale(Locale.US);
-            int size = scanner.nextInt();
-            Point[] points = new Point[size];
+            Scanner pointsScanner = new Scanner(new InputStreamReader(
+                    new FileInputStream("src/Lab3/resources/InterpolationInput2.txt"),"UTF-8")).useLocale(Locale.US);
+            int pointsCount = pointsScanner.nextInt();
+            Point[] points = new Point[pointsCount];
 
             PrintWriter pointsWriter = new PrintWriter(new File("src/Lab3/resources/res/points.pts"));
-            for (int i = 0; i < size; i++) {
-                points[i] = new Point(scanner.nextDouble(), scanner.nextDouble());
+            for (int i = 0; i < pointsCount; i++) {
+                points[i] = new Point(pointsScanner.nextDouble(), pointsScanner.nextDouble());
                 pointsWriter.println(points[i].x + " " + points[i].y);
             }
             pointsWriter.close();
 
-            double minX = points[0].x, maxX = points[size - 1].x;
+            //Writing points for building graphic
+            double minX = points[0].x, maxX = points[pointsCount - 1].x;
 
             PrintWriter directWriter = new PrintWriter(new File("src/Lab3/resources/res/directNewton.int"));
             for (double i = minX; i < maxX; i += STEP) {
@@ -41,7 +42,7 @@ public class InterpolationTest {
 
             PrintWriter lagrangeWriter = new PrintWriter(new File("src/Lab3/resources/res/lagrange.int"));
             for (double i = minX; i < maxX; i += STEP) {
-                lagrangeWriter.println(i + " " + Interpolation.getValueLagrangePolinom(i, points));
+                lagrangeWriter.println(i + " " + Interpolation.getValueLagrangePolynomial(i, points));
             }
             lagrangeWriter.close();
 
@@ -52,9 +53,48 @@ public class InterpolationTest {
                 splineWriter.println(i + " " + spline.interpolate(i));
             }
             splineWriter.close();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
+
+            //Writing checking points
+            Scanner checkPointsScanner = new Scanner(new InputStreamReader(
+                    new FileInputStream("src/Lab3/resources/CheckPoints.txt"),"UTF-8")).useLocale(Locale.US);
+            int checkPointsCount = checkPointsScanner.nextInt();
+            double[] checkPoints = new double[checkPointsCount];
+
+            PrintWriter checkPointsWriter = new PrintWriter(new File("src/Lab3/resources/res/checkPoints.pts"));
+            for (int i = 0; i < checkPointsCount; i++) {
+                checkPoints[i] = checkPointsScanner.nextDouble();
+                checkPointsWriter.println(checkPoints[i]);
+            }
+            checkPointsWriter.close();
+
+            PrintWriter checkDirectWriter = new PrintWriter(new File("src/Lab3/resources/res/directNewtonCheck.pts"));
+            for (int i = 0; i < checkPointsCount; i++) {
+                checkDirectWriter.println(checkPoints[i] + " " +
+                        Interpolation.getValueNewtonDirectPolynomial(checkPoints[i], points));
+            }
+            checkDirectWriter.close();
+
+            PrintWriter checkReverseWriter = new PrintWriter(new File("src/Lab3/resources/res/reverseNewtonCheck.pts"));
+            for (int i = 0; i < checkPointsCount; i++) {
+                checkReverseWriter.println(checkPoints[i] + " " +
+                        Interpolation.getValueNewtonReversePolynomial(checkPoints[i], points));
+            }
+            checkReverseWriter.close();
+
+            PrintWriter checkLagrangeWriter = new PrintWriter(new File("src/Lab3/resources/res/lagrangeCheck.pts"));
+            for (int i = 0; i < checkPointsCount; i++) {
+                checkLagrangeWriter.println(checkPoints[i] + " " +
+                        Interpolation.getValueLagrangePolynomial(checkPoints[i], points));
+            }
+            checkLagrangeWriter.close();
+
+            PrintWriter checkSplineWriter = new PrintWriter(new File("src/Lab3/resources/res/splineCheck.pts"));
+            for (int i = 0; i < checkPointsCount; i++) {
+                checkSplineWriter.println(checkPoints[i] + " " +
+                        spline.interpolate(checkPoints[i]));
+            }
+            checkSplineWriter.close();
+        } catch (UnsupportedEncodingException | FileNotFoundException e) {
             e.printStackTrace();
         }
     }
