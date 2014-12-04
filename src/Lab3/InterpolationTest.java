@@ -9,6 +9,8 @@ import java.util.Scanner;
  */
 public class InterpolationTest {
 
+    public static final double STEP = 0.1;
+
     public static void main(String[] args) {
         try {
             Scanner scanner = new Scanner(new InputStreamReader(
@@ -16,41 +18,40 @@ public class InterpolationTest {
             int size = scanner.nextInt();
             Point[] points = new Point[size];
 
-            PrintWriter pts = new PrintWriter(new File("src/Lab3/resources/res/points.pts"));
+            PrintWriter pointsWriter = new PrintWriter(new File("src/Lab3/resources/res/points.pts"));
             for (int i = 0; i < size; i++) {
                 points[i] = new Point(scanner.nextDouble(), scanner.nextDouble());
-                pts.println(points[i].x + " " + points[i].y);
+                pointsWriter.println(points[i].x + " " + points[i].y);
             }
-            pts.close();
-            double step = 0.1;
-            double minx = points[0].x, maxx = points[size - 1].x;
+            pointsWriter.close();
 
-            PrintWriter reverse = new PrintWriter(new File("src/Lab3/resources/res/reverse.int"));
-            for (double i = minx; i < maxx; i+=step) {
-                reverse.println(i + " " + Interpolation.getValueNewtonReversePolynomial(i, points));
+            double minX = points[0].x, maxX = points[size - 1].x;
+
+            PrintWriter directWriter = new PrintWriter(new File("src/Lab3/resources/res/directNewton.int"));
+            for (double i = minX; i < maxX; i += STEP) {
+                directWriter.println(i + " " + Interpolation.getValueNewtonDirectPolynomial(i, points));
             }
-            reverse.close();
+            directWriter.close();
 
-            PrintWriter direct = new PrintWriter(new File("src/Lab3/resources/res/direct.int"));
-            for (double i = minx; i < maxx; i+=step) {
-                direct.println(i + " " + Interpolation.getValueNewtonDirectPolynomial(i, points));
+            PrintWriter reverseWriter = new PrintWriter(new File("src/Lab3/resources/res/reverseNewton.int"));
+            for (double i = minX; i < maxX; i += STEP) {
+                reverseWriter.println(i + " " + Interpolation.getValueNewtonReversePolynomial(i, points));
             }
-            direct.close();
+            reverseWriter.close();
 
-            PrintWriter lagrange = new PrintWriter(new File("src/Lab3/resources/res/lagr.int"));
-            for (double i = minx; i < maxx; i+=step) {
-                lagrange.println(i + " " + Interpolation.getValueNewtonDirectPolynomial(i, points));
+            PrintWriter lagrangeWriter = new PrintWriter(new File("src/Lab3/resources/res/lagrange.int"));
+            for (double i = minX; i < maxX; i += STEP) {
+                lagrangeWriter.println(i + " " + Interpolation.getValueLagrangePolinom(i, points));
             }
-            lagrange.close();
+            lagrangeWriter.close();
 
-            PrintWriter spline = new PrintWriter(new File("src/Lab3/resources/res/spline.int"));
-            Spline spl = new Spline();
-            spl.buildSpline(points);
-            for (double i = minx; i < maxx; i+=step) {
-                spline.println(i + " " + spl.interpolate(i));
+            PrintWriter splineWriter = new PrintWriter(new File("src/Lab3/resources/res/spline.int"));
+            Spline spline = new Spline();
+            spline.buildSpline(points);
+            for (double i = minX; i < maxX; i += STEP) {
+                splineWriter.println(i + " " + spline.interpolate(i));
             }
-            spline.close();
-
+            splineWriter.close();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {
